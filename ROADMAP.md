@@ -1,0 +1,10 @@
+# ProcessOff Telegram AI Bot — GO Product Roadmap
+
+| Release / Date | Status | Goal | Features | Metrics |
+| --- | --- | --- | --- | --- |
+| Release 1 — Foundation (Nov–Dec 2024) | Done | Finish the core migration to Yandex Cloud and document the baseline process. | 1. Guidance packs: README, Yandex_DEPLOY, Yandex_DEVOPS, Yandex_AUTOMATION.\n2. Checks in CI: check_env.py, predeploy_check.py, 	ests/test_smoke.py.\n3. Automated ingestion/diag jobs with JSON logging. | - 100% required vars pass check_env.py.\n- CI/CD runs without manual fixes.\n- Search Index + Assistant recreated in ≤30 minutes using docs. |
+| Release 2 — Deployment Automation (Jan 2025) | In progress | Deliver DevTools + Cloud Build/Deploy workflow and lockbox automation. | 1. .cloudbuild.yaml pipeline (predeploy check + smoke test, Docker build/push, Cloud Deploy).\n2. Example deploy-spec.yaml, service accounts, and instructions to grant roles.\n3. Lockbox automation (Yandex_SECRETS.md, export_lockbox_payload.py) + plan to migrate repo to DevTools. | - ≥90% releases run via DevTools/Cloud Build.\n- Secrets rotated every 90 days via Lockbox automation.\n- Launch checklist completed before every release. |
+| Release 3 — Knowledge Ops & Monitoring (Feb–Mar 2025) | Planned | Build resilient knowledge-base operations and observability. | 1. Apply alert/notification CLI (monitoring_alerts.md) in environments.\n2. Auto reports for ingestion/job usage (log export + summaries).\n3. DataLens dashboard for usage, SLA, token consumption. | - 0 unnoticed ingestion/diag failures (alerts fire in ≤5 min).\n- Assistant SLA ≥99%.\n- Ops report generated each sprint. |
+| Release 4 — Managed RAG & Advanced Insights (Apr–Jun 2025) | Backlog | Prepare switch to Managed RAG/Responses API and advanced analytics. | 1. Automation for fetching publicUrl/ersion and updating MANAGED_RAG_* in Lockbox.\n2. 
+esponses_client.py enhancements for 
+etrieve_generate fallback.\n3. Token/usage dashboards plus budget alerts. | - Managed RAG enabled in <15 min without code changes.\n- Token spend reduced by ≥20% vs SDK mode.\n- Usage dashboards available each sprint. |

@@ -1,0 +1,16 @@
+aiogram
+asyncpg
+python-dotenv
+langchain
+pgvector
+langchain-core
+psycopg2-binary
+langchain-community
+langchain-text-splitters
+pypdf
+cryptography
+httpx
+yandex-cloud-ml-sdk
+boto3
+yandex-cloud-ml-sdk
+pytest

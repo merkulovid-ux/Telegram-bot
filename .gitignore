@@ -1,0 +1,18 @@
+# Файл с переменными окружения (содержит секреты)
+.env
+*.env
+
+# Файлы с секретами
+secrets.json
+github-deploy-key
+github-deploy-key.pub
+
+# Кэш Python
+__pycache__/
+*.pyc
+
+# Локальные данные PostgreSQL (если бы они монтировались)
+pgdata/
+
+# Системные файлы
+.DS_Store
