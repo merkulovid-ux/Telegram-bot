@@ -1,15 +1,100 @@
 import os
 from dotenv import load_dotenv
+import json
+import grpc
+
+# Импорты для работы с Lockbox
+# В зависимости от версии SDK, эти импорты могут отличаться.
+# Будем использовать общую структуру, предполагая, что LockboxServiceStub и GetPayloadRequest
+# доступны через yandex.cloud.lockbox.v1
+from yandex.cloud.lockbox.v1.payload_service_pb2 import GetPayloadRequest
+from yandex.cloud.lockbox.v1.payload_service_pb2_grpc import PayloadServiceStub
 
 load_dotenv()
 
+# --- Lockbox Helper Functions ---
+# Временное решение: для получения секретов Lockbox используется IAM-токен.
+# Это удобно для локальной разработки и тестирования.
+# Для продакшена или более надежной аутентификации (например, через GitHub Actions)
+# рекомендуется использовать ключ сервисного аккаунта или федерацию удостоверений.
+# Подробности по BL-12 (Внедрение Yandex Lockbox для секретов) в BACKLOG.md.
+def _get_lockbox_client():
+    """
+    Возвращает аутентифицированный клиент LockboxServiceStub.
+    Предполагается, что YC_IAM_TOKEN содержит IAM-токен в окружении.
+    """
+    try:
+        iam_token = os.getenv("YC_IAM_TOKEN")
+        if not iam_token:
+            raise ValueError("Для работы с Lockbox необходимо установить переменную окружения YC_IAM_TOKEN.")
+
+        credentials = grpc.access_token_call_credentials(iam_token)
+        channel = grpc.secure_channel('lockbox-payload.api.cloud.yandex.net:443', credentials)
+        
+        return PayloadServiceStub(channel)
+    except Exception as e:
+        print(f"Ошибка при получении клиента Lockbox: {e}")
+        return None
+
+def get_secret_payload(secret_id: str):
+    """
+    Получает содержимое секрета из Yandex Lockbox.
+    """
+    client = _get_lockbox_client()
+    if not client:
+        print("Не удалось получить клиент Lockbox. Невозможно получить секрет.")
+        return None
+
+    try:
+        response = client.Get(GetPayloadRequest(secret_id=secret_id))
+        print(f"Успешно получен секрет с ID: {secret_id}")
+        return response
+
+    except grpc.RpcError as e:
+        print(f"Ошибка gRPC при получении секрета: {e.code()} - {e.details()}")
+        if e.code() == grpc.StatusCode.PERMISSION_DENIED:
+            print("Проверьте, что у сервисного аккаунта/пользователя есть роль `lockbox.viewer` для данного секрета.")
+            print("Также убедитесь, что IAM-токен валиден и не истек.")
+        elif e.code() == grpc.StatusCode.NOT_FOUND:
+            print(f"Секрет с ID '{secret_id}' не найден или недоступен. Проверьте правильность SECRET_ID.")
+        return None
+    except Exception as e:
+        print(f"Произошла непредвиденная ошибка: {e}")
+        return None
+
+# --- Configuration Loading ---
+YC_LOCKBOX_SECRET_ID = os.getenv("YC_LOCKBOX_SECRET_ID")
+
+LOCKBOX_SECRETS = {}
+
+if YC_LOCKBOX_SECRET_ID:
+    print("YC_LOCKBOX_SECRET_ID обнаружен. Попытка загрузить секреты из Lockbox...")
+    
+    payload = get_secret_payload(YC_LOCKBOX_SECRET_ID)
+    if payload:
+        for entry in payload.entries:
+            if entry.text_value:
+                LOCKBOX_SECRETS[entry.key] = entry.text_value
+            elif entry.binary_value:
+                try:
+                    LOCKBOX_SECRETS[entry.key] = json.loads(entry.binary_value.decode('utf-8'))
+                except (json.JSONDecodeError, UnicodeDecodeError):
+                    LOCKBOX_SECRETS[entry.key] = entry.binary_value.decode('utf-8')
+        print("Секреты из Lockbox успешно загружены.")
+    else:
+        print("Не удалось загрузить секреты из Lockbox.")
+
 
 def _require(name: str) -> str:
+    # Проверяем сначала в Lockbox
+    if name in LOCKBOX_SECRETS:
+        return LOCKBOX_SECRETS[name]
+    
+    # Затем в переменных окружения
     value = os.getenv(name)
     if not value:
-        raise ValueError(f"Не найдена обязательная переменная окружения {name}")
+        raise ValueError(f"Не найдена обязательная переменная окружения или секрет Lockbox: {name}")
     return value
-
 
 TELEGRAM_BOT_TOKEN = _require("TELEGRAM_BOT_TOKEN")
 
