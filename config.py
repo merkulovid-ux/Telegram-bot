@@ -4,37 +4,51 @@ import json
 import grpc
 
 # Импорты для работы с Lockbox
-# В зависимости от версии SDK, эти импорты могут отличаться.
-# Будем использовать общую структуру, предполагая, что LockboxServiceStub и GetPayloadRequest
-# доступны через yandex.cloud.lockbox.v1
 from yandex.cloud.lockbox.v1.payload_service_pb2 import GetPayloadRequest
 from yandex.cloud.lockbox.v1.payload_service_pb2_grpc import PayloadServiceStub
+
+# Импорты для SDK аутентификации из пакета yandexcloud
+from yandexcloud._sdk import SDK # This is where the SDK object is
+
 
 load_dotenv()
 
 # --- Lockbox Helper Functions ---
-# Временное решение: для получения секретов Lockbox используется IAM-токен.
-# Это удобно для локальной разработки и тестирования.
-# Для продакшена или более надежной аутентификации (например, через GitHub Actions)
-# рекомендуется использовать ключ сервисного аккаунта или федерацию удостоверений.
-# Подробности по BL-12 (Внедрение Yandex Lockbox для секретов) в BACKLOG.md.
+# Реализация аутентификации Lockbox с приоритетом для ключа сервисного аккаунта.
 def _get_lockbox_client():
     """
     Возвращает аутентифицированный клиент LockboxServiceStub.
-    Предполагается, что YC_IAM_TOKEN содержит IAM-токен в окружении.
+    Приоритет: YC_SERVICE_ACCOUNT_KEY_FILE, затем YC_IAM_TOKEN.
     """
-    try:
-        iam_token = os.getenv("YC_IAM_TOKEN")
-        if not iam_token:
-            raise ValueError("Для работы с Lockbox необходимо установить переменную окружения YC_IAM_TOKEN.")
+    sdk_instance = None
+    
+    # Попытка аутентификации через ключ сервисного аккаунта
+    key_file_path = os.getenv("YC_SERVICE_ACCOUNT_KEY_FILE")
+    if key_file_path:
+        try:
+            with open(key_file_path, "r") as f:
+                sa_key_json = json.load(f)
+            sdk_instance = SDK(service_account_key=sa_key_json)
+        except FileNotFoundError:
+            print(f"Ошибка: Файл ключа сервисного аккаунта не найден по пути: {key_file_path}. Попытка аутентификации через IAM-токен.")
+        except Exception as e:
+            print(f"Ошибка при аутентификации через ключ сервисного аккаунта: {e}. Попытка аутентификации через IAM-токен.")
 
-        credentials = grpc.access_token_call_credentials(iam_token)
-        channel = grpc.secure_channel('lockbox-payload.api.cloud.yandex.net:443', credentials)
-        
-        return PayloadServiceStub(channel)
-    except Exception as e:
-        print(f"Ошибка при получении клиента Lockbox: {e}")
-        return None
+    # Если аутентификация через ключ СА не удалась, пробуем IAM-токен
+    if sdk_instance is None:
+        iam_token = os.getenv("YC_IAM_TOKEN")
+        if iam_token:
+            try:
+                sdk_instance = SDK(token=iam_token)
+            except Exception as e:
+                print(f"Ошибка при аутентификации через IAM-токен: {e}.")
+        else:
+            raise ValueError("Не найдены учетные данные для Lockbox. Установите YC_SERVICE_ACCOUNT_KEY_FILE или YC_IAM_TOKEN.")
+
+    if sdk_instance is None:
+        raise ValueError("Не удалось инициализировать Yandex Cloud SDK для Lockbox.")
+
+    return sdk_instance.client(PayloadServiceStub)
 
 def get_secret_payload(secret_id: str):
     """
