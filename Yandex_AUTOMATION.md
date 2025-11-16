@@ -54,8 +54,8 @@ yc serverless trigger cron create \
   --job-id <kb-diag-job-id> \
   --retry-attempts 3 \
   --retry-interval 60s
-`n`n`diag_connectivity.py` âûâîäèò JSON-ñòðîêè ïî êàæäîìó êîìïîíåíòó (postgresql, search_index, object_storage) è çàâåðøàåò ðàáîòó ñ êîäîì 1 ïðè îøèáêàõ. Ýòî óïðîùàåò ïîñòðîåíèå àëåðòîâ â Cloud Logging (ñì. `Yandex_MONITORING.md`).
 ```
+`diag_connectivity.py` Ð²Ñ‹Ð²Ð¾Ð´Ð¸Ñ‚ JSON-Ð¾Ñ‚Ñ‡ÐµÑ‚Ñ‹ Ð¿Ð¾ ÐºÐ°Ð¶Ð´Ð¾Ð¼Ñƒ ÐºÐ¾Ð¼Ð¿Ð¾Ð½ÐµÐ½Ñ‚Ñƒ (postgresql, search_index, object_storage) Ð¸ Ð¾Ñ‚Ð¿Ñ€Ð°Ð²Ð»ÑÐµÑ‚ Ð¸Ñ… Ð² Cloud Logging (ÑÐ¼. `Yandex_MONITORING.md`).
 
 ## 4. Ð›Ð¾Ð³Ð¸ Ð¸ Ð¼Ð¾Ð½Ð¸Ñ‚Ð¾Ñ€Ð¸Ð½Ð³
 - Jobâ€™Ñ‹ Ð°Ð²Ñ‚Ð¾Ð¼Ð°Ñ‚Ð¸Ñ‡ÐµÑÐºÐ¸ Ð¿Ð¸ÑˆÑƒÑ‚ stdout/stderr Ð² Cloud Logging (`yc logging read`). ÐÐ°ÑÑ‚Ñ€Ð¾Ð¹Ñ‚Ðµ Ð°Ð»ÐµÑ€Ñ‚ Ð² Monitoring Ð½Ð° Ð¾ÑˆÐ¸Ð±ÐºÐ¸ (`severity>=ERROR`).

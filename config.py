@@ -29,3 +29,4 @@ MANAGED_RAG_VERSION_ID = os.getenv("MANAGED_RAG_VERSION_ID")
 MANAGED_RAG_MODEL = os.getenv("MANAGED_RAG_MODEL", "t-tech/T-lite-it-1.0")
 
 DATABASE_URL = _require("DATABASE_URL")
+ADMIN_ID = int(_require("ADMIN_ID"))

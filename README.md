@@ -1,90 +1,90 @@
 # Telegram AI Bot
 
-## 1. Что это такое
-Телеграм-бот ProcessOff помогает командам по Agile/Scrum. Он отвечает на вопросы из базы знаний (PDF/TXT/MD в `data_pdfs/`), умеет делать дайджесты, SWOT, NVC и т.д. Бэкенд построен на Aiogram + PostgreSQL, RAG работает через Yandex AI Studio (Search Index + Assistant) и Responses API.
+## 1. Рћ РїСЂРѕРµРєС‚Рµ
+Telegram-Р±РѕС‚ ProcessOff РїСЂРµРґРѕСЃС‚Р°РІР»СЏРµС‚ РѕС‚РІРµС‚С‹ РЅР° РІРѕРїСЂРѕСЃС‹ РїРѕ Agile/Scrum. РћРЅ РѕС‚РІРµС‡Р°РµС‚ РЅР° РІРѕРїСЂРѕСЃС‹ РїРѕ Р±Р°Р·Рµ Р·РЅР°РЅРёР№ (PDF/TXT/MD РёР· `data_pdfs/`), РІРєР»СЋС‡Р°СЏ РІРѕРїСЂРѕСЃС‹ РїРѕ СЂРµС‚СЂРѕСЃРїРµРєС‚РёРІР°Рј, SWOT, NVC Рё С‚.Рґ. Р‘РѕС‚ РїРѕСЃС‚СЂРѕРµРЅ РЅР° Aiogram + PostgreSQL, RAG СЂРµР°Р»РёР·РѕРІР°РЅ С‡РµСЂРµР· Yandex AI Studio (Search Index + Assistant) Рё Responses API.
 
-## 2. Быстрый старт локально
-1. Python 3.11+, PostgreSQL (можно из Docker).
-2. Склонируй репозиторий, создай виртуальное окружение:
+## 2. Р—Р°РїСѓСЃРє РїСЂРѕРµРєС‚Р°
+1. Python 3.11+, PostgreSQL (РЅР°РїСЂРёРјРµСЂ, РІ Docker).
+2. РџСЂРѕРІРµСЂСЊС‚Рµ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё, Р·Р°С‚РµРј СѓСЃС‚Р°РЅРѕРІРёС‚Рµ РёС…:
    ```bash
    python -m venv .venv
    .venv\Scripts\activate  # Windows
    pip install -r requirements.txt
    ```
-3. Заполни `.env` на основе `.env.example` (см. таблицу ниже).
-4. Подними БД (локально или в Docker) и задай `DATABASE_URL` в `.env`.
-5. Запусти бота:
+3. РЎРєРѕРїРёСЂСѓР№С‚Рµ `.env` РёР· С„Р°Р№Р»Р° `.env.example` (СЃРј. СЃРµРєС†РёСЋ РЅРёР¶Рµ).
+4. Р—Р°РїСѓСЃС‚РёС‚Рµ Р‘Р” (РЅР°РїСЂРёРјРµСЂ, РІ Docker) Рё СѓРєР°Р¶РёС‚Рµ `DATABASE_URL` РІ `.env`.
+5. Р—Р°РїСѓСЃС‚РёС‚Рµ Р±РѕС‚Р°:
    ```bash
    python app.py
    ```
 
-### Обязательные переменные
-| Имя | Назначение |
+### РџРµСЂРµРјРµРЅРЅС‹Рµ РѕРєСЂСѓР¶РµРЅРёСЏ
+| РљР»СЋС‡ | РћРїРёСЃР°РЅРёРµ |
 | --- | --- |
-| `TELEGRAM_BOT_TOKEN` | токен от BotFather |
-| `DATABASE_URL` | строка подключения к PostgreSQL (пример: `postgresql://user:pass@localhost:5432/ai_bot`) |
-| `YANDEX_API_KEY` / `YC_API_KEY` | API?ключ Yandex Cloud для SDK/Responses API |
-| `YANDEX_FOLDER_ID` / `YC_FOLDER_ID` | ID каталога в Yandex Cloud |
-| `YC_SEARCH_INDEX_ID`, `YC_ASSISTANT_ID` | ID Search Index и Assistant из AI Studio |
-| `YC_OBS_*` | доступы к Object Storage, если используешь `ingest_yc.py` |
-| `MANAGED_RAG_*` | параметры Responses API (опционально, для Managed RAG) |
+| `TELEGRAM_BOT_TOKEN` | РўРѕРєРµРЅ РѕС‚ BotFather |
+| `DATABASE_URL` | РЎС‚СЂРѕРєР° РїРѕРґРєР»СЋС‡РµРЅРёСЏ Рє PostgreSQL (РїСЂРёРјРµСЂ: `postgresql://user:pass@localhost:5432/ai_bot`) |
+| `YANDEX_API_KEY` / `YC_API_KEY` | API-РєР»СЋС‡ Yandex Cloud РґР»СЏ SDK/Responses API |
+| `YANDEX_FOLDER_ID` / `YC_FOLDER_ID` | ID РєР°С‚Р°Р»РѕРіР° РІ Yandex Cloud |
+| `YC_SEARCH_INDEX_ID`, `YC_ASSISTANT_ID` | ID Search Index Рё Assistant РёР· AI Studio |
+| `YC_OBS_*` | РљР»СЋС‡Рё Рє Object Storage, РµСЃР»Рё РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ `ingest_yc.py` |
+| `MANAGED_RAG_*` | РџР°СЂР°РјРµС‚СЂС‹ Responses API (РЅР°РїСЂРёРјРµСЂ, РґР»СЏ Managed RAG) |
 
-## 3. Импорт базы знаний
-1. Сложи PDF/TXT/MD в `data_pdfs/категория`.
-2. Запусти загрузку в Object Storage + создание Search Index:
+## 3. Р Р°Р±РѕС‚Р° СЃ Р±Р°Р·РѕР№ Р·РЅР°РЅРёР№
+1. РџРѕРјРµСЃС‚РёС‚Рµ PDF/TXT/MD РІ `data_pdfs/knowledge_base`.
+2. Р—Р°РіСЂСѓР·РёС‚Рµ РґРѕРєСѓРјРµРЅС‚С‹ РІ Object Storage + РѕР±РЅРѕРІРёС‚Рµ Search Index:
    ```bash
    python ingest_yc.py
    ```
-   Скрипт сохранит ID в `.yc_search_index_id`.
-3. Создай ассистента AI Studio и привяжи Search Index:
+   РЎРєСЂРёРїС‚ СЃРѕС…СЂР°РЅРёС‚ ID РІ `.yc_search_index_id`.
+3. РЎРѕР·РґР°Р№С‚Рµ Р°СЃСЃРёСЃС‚РµРЅС‚Р° AI Studio СЃ РёСЃРїРѕР»СЊР·РѕРІР°РЅРёРµРј Search Index:
    ```bash
    python create_assistant.py
    ```
-   ID сохранится в `.yc_assistant_id`.
-4. Обнови `.env` и перезапусти бота. Команда `/kb` подтянет свежую структуру.
+   ID Р°СЃСЃРёСЃС‚РµРЅС‚Р° СЃРѕС…СЂР°РЅРёС‚СЃСЏ РІ `.yc_assistant_id`.
+4. РћР±РЅРѕРІРёС‚Рµ `.env` СЃ РїРѕР»СѓС‡РµРЅРЅС‹РјРё ID. РљРѕРјР°РЅРґР° `/kb` РїРѕРєР°Р¶РµС‚ СЃРїРёСЃРѕРє РґРѕРєСѓРјРµРЅС‚РѕРІ.
 
-## 4. Команды бота
-| Команда | Назначение |
+## 4. РљРѕРјР°РЅРґС‹ Р±РѕС‚Р°
+| РљРѕРјР°РЅРґР° | РћРїРёСЃР°РЅРёРµ |
 | --- | --- |
-| `/kb` | просмотр категорий/тем из базы знаний |
-| `/ask <вопрос>` | ответ из RAG |
-| `/digest <тема>` | короткий дайджест (3–5 тезисов) |
-| `/swot`, `/nvc`, `/po_helper`, `/conflict`, `/retro`, `/icebreaker` | специализированные режимы (описаны в `handlers/llm_commands.py`) |
-| `/feedback` | отправить отзыв (пишется в таблицу `feedback`, форвард админу) |
+| `/kb` | РџРѕРєР°Р·Р°С‚СЊ РґРѕРєСѓРјРµРЅС‚С‹/С‚РµРјС‹ РёР· Р±Р°Р·С‹ Р·РЅР°РЅРёР№ |
+| `/ask <Р·Р°РїСЂРѕСЃ>` | Р—Р°РґР°С‚СЊ РІРѕРїСЂРѕСЃ РїРѕ RAG |
+| `/digest <С‚РµРјР°>` | РЎРґРµР»Р°С‚СЊ РґР°Р№РґР¶РµСЃС‚ (3-5 РїСѓРЅРєС‚РѕРІ) |
+| `/swot`, `/nvc`, `/po_helper`, `/conflict`, `/retro`, `/icebreaker` | РЎРїРµС†РёР°Р»РёР·РёСЂРѕРІР°РЅРЅС‹Рµ РєРѕРјР°РЅРґС‹ (СЃРј. РІ `handlers/llm_commands.py`) |
+| `/feedback` | РћСЃС‚Р°РІРёС‚СЊ РѕС‚Р·С‹РІ (СЃРѕС…СЂР°РЅСЏРµС‚СЃСЏ РІ С‚Р°Р±Р»РёС†Сѓ `feedback`, СЃРј. СЃС…РµРјСѓ) |
 
-## 5. Тесты и диагностика
-- Смоук?тест: `pytest tests/test_smoke.py`.
-- Проверка окружения: `python check_env.py --env .env --env .env.prod`.
-- Диагностика YC (Postgres/Search Index/Object Storage): `python diag_connectivity.py` (лог в JSON).
-- Для отчёта: `python scripts/diag_report.py` (обновит `diag_report.md`).
+## 5. РџСЂРѕРІРµСЂРєРё Рё РґРёР°РіРЅРѕСЃС‚РёРєР°
+- Smoke-С‚РµСЃС‚С‹: `pytest tests/test_smoke.py`.
+- РџСЂРѕРІРµСЂРєР° РїРµСЂРµРјРµРЅРЅС‹С…: `python check_env.py --env .env --env .env.prod`.
+- Р”РёР°РіРЅРѕСЃС‚РёРєР° YC (Postgres/Search Index/Object Storage): `python diag_connectivity.py` (РІС‹РІРѕРґ РІ JSON).
+- РџРѕР»РЅС‹Р№ РѕС‚С‡С‘С‚: `python scripts/diag_report.py` (СЃРѕР·РґР°С‘С‚ `diag_report.md`).
 
-## 6. Деплой (Release 2 — Deployment Automation)
-Полный чеклист лежит в `Yandex_INFRA_SETUP.md`. Суть:
-1. **Lockbox** — выгрузить `.env` > `python export_lockbox_payload.py ...` > создать секрет и получить `secret_id`.
-2. **Service Accounts** — `telegram-runtime`, `telegram-deploy`, `telegram-build` с минимальными ролями (`serverless.containers.admin`, `deploy.editor`, `cloud-build.builder`, `lockbox.payloadViewer` и т.д.).
-3. **Container Registry** — `cr.yandex/<registry-id>`; используем его в `.cloudbuild.yaml` и `deploy-spec.yaml`.
-4. **GitHub/Managed GitLab** — код должен жить в репо, которое видит Cloud Build.
-5. **Cloud Build** — триггер по `main`, файл `.cloudbuild.yaml` уже готов (predeploy, pytest, docker build/push, `yc deploy release run`).
-6. **deploy-spec.yaml** — пропиши `service-account-id`, `secretId`, реальные ENV и образ `${BUILD_ID}`.
-7. **Мониторинг** — `python scripts/generate_alert_cli.py --spec monitoring_alerts.yaml --var channel-id=... --var container-id=... --var kb-diag-job-id=...` и создай alert'ы.
+## 6. Р РµР»РёР· (Release 2 вЂ“ Deployment Automation)
+РџРѕРґСЂРѕР±РЅРѕСЃС‚Рё СЃРјРѕС‚СЂРёС‚Рµ РІ `Yandex_INFRA_SETUP.md`. РљР»СЋС‡РµРІС‹Рµ С€Р°РіРё:
+1. **Lockbox** РґР»СЏ СЃРµРєСЂРµС‚РѕРІ РёР· `.env` > `python export_lockbox_payload.py ...` > СЃРѕС…СЂР°РЅРёС‚Рµ `secret_id`.
+2. **Service Accounts** (`telegram-runtime`, `telegram-deploy`, `telegram-build`) СЃ РЅРµРѕР±С…РѕРґРёРјС‹РјРё СЂРѕР»СЏРјРё (`serverless.containers.admin`, `deploy.editor`, `cloud-build.builder`, `lockbox.payloadViewer` Рё С‚.Рґ.).
+3. **Container Registry** (`cr.yandex/<registry-id>`); СѓРєР°Р¶РёС‚Рµ РµРіРѕ РІ `.cloudbuild.yaml` Рё `deploy-spec.yaml`.
+4. **GitHub/Managed GitLab** РґР»СЏ РёСЃС…РѕРґРЅРѕРіРѕ РєРѕРґР°, РєРѕС‚РѕСЂС‹Р№ Р±СѓРґРµС‚ Р·Р°Р±РёСЂР°С‚СЊ Cloud Build.
+5. **Cloud Build** С‚СЂРёРіРіРµСЂ РЅР° `main`, РёСЃРїРѕР»СЊР·СѓСЋС‰РёР№ `.cloudbuild.yaml` РґР»СЏ СЃР±РѕСЂРєРё (predeploy, pytest, docker build/push, `yc deploy release run`).
+6. **deploy-spec.yaml** СЃ СѓРєР°Р·Р°РЅРёРµРј `service-account-id`, `secretId`, РїРµСЂРµРјРµРЅРЅС‹С… РѕРєСЂСѓР¶РµРЅРёСЏ Рё `${BUILD_ID}`.
+7. **РњРѕРЅРёС‚РѕСЂРёРЅРі** СЃ `python scripts/generate_alert_cli.py --spec monitoring_alerts.yaml --var channel-id=... --var container-id=... --var kb-diag-job-id=...` РґР»СЏ СЃРѕР·РґР°РЅРёСЏ Р°Р»РµСЂС‚РѕРІ.
 
-## 7. Мониторинг и поддержка
-- Alerts и notification channels — `monitoring_alerts.md`.
-- Cron/Serverless Jobs — `Yandex_AUTOMATION.md`.
-- Регулярно запускай `diag_connectivity.py` (можно как job) и публикуй `diag_report.md`.
+## 7. РњРѕРЅРёС‚РѕСЂРёРЅРі Рё Р°РІС‚РѕРјР°С‚РёР·Р°С†РёСЏ
+- Alerts Рё notification channels РѕРїРёСЃР°РЅС‹ РІ `monitoring_alerts.md`.
+- Cron/Serverless Jobs РѕРїРёСЃР°РЅС‹ РІ `Yandex_AUTOMATION.md`.
+- Р”РёР°РіРЅРѕСЃС‚РёС‡РµСЃРєРёР№ СЃРєСЂРёРїС‚ `diag_connectivity.py` (Р·Р°РїСѓСЃРєР°РµС‚СЃСЏ РєР°Рє job) Рё РѕС‚С‡С‘С‚ `diag_report.md`.
 
-## 8. Где что лежит
-| Файл | Что внутри |
+## 8. РџРѕР»РµР·РЅС‹Рµ СЃСЃС‹Р»РєРё
+| Р¤Р°Р№Р» | РћРїРёСЃР°РЅРёРµ |
 | --- | --- |
-| `Yandex_INFRA_SETUP.md` | детальный bootstrap YC (Lockbox, SA, Cloud Build, Deploy, Monitoring) |
-| `scripts/generate_yc_bootstrap.py` | печатает все нужные `yc`/`docker` команды под твои ID |
-| `Yandex_DEPLOY.md`, `Yandex_DEVOPS.md`, `Yandex_SECRETS.md` | расширенные инструкции по деплою/CI/CD/секретам |
-| `ROADMAP.md`, `BACKLOG.md` | актуальный продуктовый план (Release 2 — In progress, Release 3 — Planned) |
-| `monitoring_alerts.md`, `diag_report.md`, `LAUNCH_CHECKLIST.md` | наблюдаемость и контроль релизов |
-| `GEMINI_START.md` | стартовый файл для ИИ-агента: что проверить перед задачей |
+| `Yandex_INFRA_SETUP.md` | РџРѕРґСЂРѕР±РЅС‹Р№ bootstrap YC (Lockbox, SA, Cloud Build, Deploy, Monitoring) |
+| `scripts/generate_yc_bootstrap.py` | Р“РµРЅРµСЂР°С†РёСЏ `yc`/`docker` РєРѕРјР°РЅРґ РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ ID |
+| `Yandex_DEPLOY.md`, `Yandex_DEVOPS.md`, `Yandex_SECRETS.md` | Р”РѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Рµ РёРЅСЃС‚СЂСѓРєС†РёРё РїРѕ РґРµРїР»РѕСЋ/CI/CD/СЃРµРєСЂРµС‚Р°Рј |
+| `ROADMAP.md`, `BACKLOG.md` | РђРєС‚СѓР°Р»СЊРЅРѕРµ СЃРѕСЃС‚РѕСЏРЅРёРµ РїСЂРѕРµРєС‚Р° (Release 2 вЂ“ In progress, Release 3 вЂ“ Planned) |
+| `monitoring_alerts.md`, `diag_report.md`, `LAUNCH_CHECKLIST.md` | РњРѕРЅРёС‚РѕСЂРёРЅРі Рё РєРѕРЅС‚СЂРѕР»СЊРЅС‹Рµ СЃРїРёСЃРєРё |
+| `GEMINI_START.md` | РЎС‚Р°СЂС‚РѕРІС‹Р№ С„Р°Р№Р» РґР»СЏ Gemini-Р°РіРµРЅС‚Р°: РєР°Рє РїСЂРѕРґРѕР»Р¶РёС‚СЊ СЂР°Р±РѕС‚Сѓ |
 
-## 9. Правила команды
-- Каждые 3 ответа — короткий refinement, каждые 5 — ретро (см. README/ROADMAP).
-- Код: PEP8 + type hints, docstring (Google style), секреты только в Lockbox.
-- Перед деплоем обязательно `predeploy_check.py` и `pytest tests/test_smoke.py`.
-- DevOps отвечает за YC/Lockbox/CI/CD, QA — за тесты, Scrum Master/PO — за синхронизацию backlog (Release 2/3).
+## 9. РљР»СЋС‡РµРІС‹Рµ РїСЂРёРЅС†РёРїС‹
+- РџСЂРѕРІРѕРґРёС‚СЊ 3 СЂРµРІСЊСЋ Рё 5 СЂРµС‚СЂРѕСЃРїРµРєС‚РёРІ (СЃРј. README/ROADMAP).
+- РљРѕРґ: PEP8 + type hints, docstring (Google style), С…СЂР°РЅРµРЅРёРµ СЃРµРєСЂРµС‚РѕРІ РІ Lockbox.
+- Р’СЃРµРіРґР° Р·Р°РїСѓСЃРєР°С‚СЊ `predeploy_check.py` Рё `pytest tests/test_smoke.py`.
+- DevOps РѕС‚РІРµС‡Р°РµС‚ Р·Р° YC/Lockbox/CI/CD, QA вЂ“ Р·Р° С‚РµСЃС‚С‹, Scrum Master/PO вЂ“ Р·Р° РїСЂРёРѕСЂРёС‚РёР·Р°С†РёСЋ backlog (Release 2/3).

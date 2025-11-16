@@ -184,7 +184,7 @@ yc resource-manager folder add-access-binding \
 
 РўР°РєРѕР№ РїСЂРѕС†РµСЃСЃ СѓРґРѕРІР»РµС‚РІРѕСЂСЏРµС‚ С‚СЂРµР±РѕРІР°РЅРёСЋ вЂњР±РµР· GitHubвЂќ: РІРµСЃСЊ С†РёРєР» (РєРѕРґ, СЃРµРєСЂРµС‚С‹, СЃР±РѕСЂРєР°, РґРµРїР»РѕР№, РјРѕРЅРёС‚РѕСЂРёРЅРі) РЅР°С…РѕРґРёС‚СЃСЏ РІ СЃРµСЂРІРёСЃР°С… Yandex Cloud.
 
-## 8. Bootstrap-инструкция и скрипты
-- Полный чеклист настройки инфраструктуры: Yandex_INFRA_SETUP.md.
-- Для генерации команд yc/docker/Lockbox/Deploy воспользуйтесь "python scripts/generate_yc_bootstrap.py --folder-id [folder] --registry-id [registry] --container-id [container] --secret-id [secret]".
-- Скрипт ускоряет работу DevOps-инженера: он выводит последовательность создания сервисных аккаунтов, выдачи ролей, Lockbox, docker build/push, Cloud Deploy и мониторинга.
+## 8. Bootstrap-СЃРєСЂРёРїС‚С‹ Рё Р°РІС‚РѕРјР°С‚РёР·Р°С†РёСЏ
+- Р”Р»СЏ Р±С‹СЃС‚СЂРѕРіРѕ СЃС‚Р°СЂС‚Р° РёСЃРїРѕР»СЊР·СѓР№С‚Рµ Yandex_INFRA_SETUP.md.
+- Р”Р»СЏ РіРµРЅРµСЂР°С†РёРё РєРѕРјР°РЅРґ yc/docker/Lockbox/Deploy РёСЃРїРѕР»СЊР·СѓР№С‚Рµ "python scripts/generate_yc_bootstrap.py --folder-id [folder] --registry-id [registry] --container-id [container] --secret-id [secret]".
+- Р РѕР»СЊ DevOps-РёРЅР¶РµРЅРµСЂР°: РѕРЅ РѕС‚РІРµС‡Р°РµС‚ Р·Р° РЅР°СЃС‚СЂРѕР№РєСѓ РёРЅС„СЂР°СЃС‚СЂСѓРєС‚СѓСЂС‹, СЃРµСЂРІРёСЃРЅС‹С… Р°РєРєР°СѓРЅС‚РѕРІ, Lockbox, docker build/push, Cloud Deploy Рё РјРѕРЅРёС‚РѕСЂРёРЅРі.

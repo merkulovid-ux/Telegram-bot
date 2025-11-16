@@ -27,7 +27,7 @@ services:
       - .env
     volumes:
       - ./data_pdfs:/app/data_pdfs
-    command: python app.py
+    command: python main_langgraph.py
     restart: always
 
 volumes:

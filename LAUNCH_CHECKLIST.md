@@ -1,31 +1,31 @@
 # Launch Checklist for Telegram AI Bot (Yandex Cloud)
 
-## Конфигурация окружения
-- [ ] `python check_env.py --env .env --env .env.prod` проходит без ошибок.
-- [ ] Все секреты перенесены в Lockbox/Secrets Manager (`TELEGRAM_BOT_TOKEN`, `YC_API_KEY`, `YC_OBS_*`, `DATABASE_URL`).
-- [ ] `.yc_search_index_id` и `.yc_assistant_id` актуальны и перенесены в `.env.prod`.
+## РџСЂРѕРІРµСЂРєР° РєРѕРЅС„РёРіСѓСЂР°С†РёРё
+- [ ] `python check_env.py --env .env --env .env.prod` РїСЂРѕС…РѕРґРёС‚ СѓСЃРїРµС€РЅРѕ.
+- [ ] Р’СЃРµ СЃРµРєСЂРµС‚С‹ Р·Р°РіСЂСѓР¶РµРЅС‹ РІ Lockbox/Secrets Manager (`TELEGRAM_BOT_TOKEN`, `YC_API_KEY`, `YC_OBS_*`, `DATABASE_URL`).
+- [ ] `.yc_search_index_id` Рё `.yc_assistant_id` РїСЂРёСЃСѓС‚СЃС‚РІСѓСЋС‚ Рё Р°РєС‚СѓР°Р»СЊРЅС‹ РІ `.env`.
 
-## Хранилище знаний
-- [ ] Файлы загружены в Object Storage (`processoff-kb/knowledge-base/`).
-- [ ] `python ingest_yc.py` выполнен, Search Index создан и записан.
-- [ ] `python create_assistant.py` выполнен, ассистент создан.
-- [ ] Cron-триггер `kb-ingest-daily` активен (см. `Yandex_AUTOMATION.md`).
+## РџРѕРґРіРѕС‚РѕРІРєР° РґР°РЅРЅС‹С…
+- [ ] Р‘Р°Р·Р° Р·РЅР°РЅРёР№ Р·Р°РіСЂСѓР¶РµРЅР° РІ Object Storage (`processoff-kb/knowledge-base/`).
+- [ ] `python ingest_yc.py` РІС‹РїРѕР»РЅРµРЅ, Search Index СЃРѕР·РґР°РЅ Рё РЅР°РїРѕР»РЅРµРЅ.
+- [ ] `python create_assistant.py` РІС‹РїРѕР»РЅРµРЅ, Р°СЃСЃРёСЃС‚РµРЅС‚ СЃРѕР·РґР°РЅ.
+- [ ] Cron-С‚СЂРёРіРіРµСЂ `kb-ingest-daily` Р°РєС‚РёРІРµРЅ (СЃРј. `Yandex_AUTOMATION.md`).
 
-## Приложение
-- [ ] Docker-образ опубликован в Container Registry (`cr.yandex/...`).
-- [ ] Serverless Container обновлён командой `yc serverless container revision deploy ...`.
-- [ ] Telegram webhook настроен на публичный endpoint (если используется webhook-режим).
-- [ ] Managed PostgreSQL доступен, `DATABASE_URL` обновлён.
+## Р Р°Р·РІРµСЂС‚С‹РІР°РЅРёРµ
+- [ ] Docker-РѕР±СЂР°Р· РѕРїСѓР±Р»РёРєРѕРІР°РЅ РІ Container Registry (`cr.yandex/...`).
+- [ ] Serverless Container СѓСЃРїРµС€РЅРѕ СЂР°Р·РІРµСЂРЅСѓС‚ `yc serverless container revision deploy ...`.
+- [ ] Telegram webhook РЅР°СЃС‚СЂРѕРµРЅ РЅР° РїСѓР±Р»РёС‡РЅС‹Р№ endpoint (РµСЃР»Рё РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ webhook-РјРѕРґРµР»СЊ).
+- [ ] Managed PostgreSQL РЅР°СЃС‚СЂРѕРµРЅ, `DATABASE_URL` Р°РєС‚СѓР°Р»РµРЅ.
 
-## Мониторинг
-- [ ] `diag_connectivity.py` job настроен и запускается по cron.
-- [ ] Настроены алерты в Monitoring (`serverless.container.errors.count`, `serverless.job.executions.failed_count`).
-- [ ] Notification channels (email/Telegram) активны.
-- [ ] Дашборд Monitoring создан и отображает основные метрики.
+## РњРѕРЅРёС‚РѕСЂРёРЅРі
+- [ ] `diag_connectivity.py` job Р·Р°РїСѓС‰РµРЅ Рё РЅР°СЃС‚СЂРѕРµРЅ РїРѕ cron.
+- [ ] РќР°СЃС‚СЂРѕРµРЅС‹ Р°Р»РµСЂС‚С‹ РІ Monitoring (`serverless.container.errors.count`, `serverless.job.executions.failed_count`).
+- [ ] Notification channels (email/Telegram) РЅР°СЃС‚СЂРѕРµРЅС‹.
+- [ ] Р”Р°С€Р±РѕСЂРґС‹ Monitoring РѕС‚РѕР±СЂР°Р¶Р°СЋС‚ РєРѕСЂСЂРµРєС‚РЅС‹Рµ РјРµС‚СЂРёРєРё.
 
-## Документация и процессы
-- [ ] README + Yandex_* файлы актуальны и отражают фактический процесс.
-- [ ] Правило ретроспектив после каждых 5 ответов соблюдается.
-- [ ] Роли команды актуализированы (DevOps/Monitoring объединены при необходимости).
+## Р”РѕРєСѓРјРµРЅС‚Р°С†РёСЏ Рё РїСЂРѕС†РµСЃСЃС‹
+- [ ] README + Yandex_* С„Р°Р№Р»С‹ Р°РєС‚СѓР°Р»СЊРЅС‹ Рё РїРµСЂРµРІРµРґРµРЅС‹ РІ UTF-8.
+- [ ] РџСЂРѕРІРµРґРµРЅС‹ РІСЃРµ РЅРµРѕР±С…РѕРґРёРјС‹Рµ СЂРµРІСЊСЋ Рё СЂРµС‚СЂРѕСЃРїРµРєС‚РёРІС‹ (РјРёРЅРёРјСѓРј 5).
+- [ ] Р’СЃРµ РєСЂРёС‚РёС‡РµСЃРєРёРµ РїСЂРѕС†РµСЃСЃС‹ Р°РІС‚РѕРјР°С‚РёР·РёСЂРѕРІР°РЅС‹ (DevOps/Monitoring РЅР°СЃС‚СЂРѕРµРЅС‹ РґР»СЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРѕРіРѕ СЂРµР°РіРёСЂРѕРІР°РЅРёСЏ).
 
-После выполнения всей чек-листа можно запускать прод-версии и проводить финальное UAT/acceptance тестирование.
+РџРѕСЃР»Рµ РїСЂРѕС…РѕР¶РґРµРЅРёСЏ РІСЃРµС… РїСѓРЅРєС‚РѕРІ Р±РѕС‚ РіРѕС‚РѕРІ Рє Р·Р°РїСѓСЃРєСѓ Рё РґР°Р»СЊРЅРµР№С€РµР№ СЂР°Р±РѕС‚Рµ.

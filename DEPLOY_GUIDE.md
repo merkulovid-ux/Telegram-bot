@@ -19,17 +19,17 @@
 2.  **Инициализируйте Git в вашем проекте** (если еще не сделали):
     *   Откройте терминал в папке с ботом (`C:\Users\U_M16X2\telegram-ai-bot`) и выполните команды:
     ```bash
-    git init
-    git add .
-    git commit -m "Initial commit"
+git init
+git add .
+git commit -m "Initial commit"
     ```
 
 3.  **Свяжите локальный проект с репозиторием на GitHub**:
     *   Скопируйте URL вашего репозитория и выполните команды:
     ```bash
-    git remote add origin <URL_ВАШЕГО_РЕПОЗИТОРИЯ>
-    git branch -M main
-    git push -u origin main
+git remote add origin <URL_ВАШЕГО_РЕПОЗИТОРИЯ>
+git branch -M main
+git push -u origin main
     ```
 
 Теперь ваш код в безопасности и готов к переносу на сервер.
@@ -40,37 +40,37 @@
 
 1.  **Подключитесь к серверу по SSH**:
     ```bash
-    ssh ваш_логин@IP_адрес_вашего_сервера
+ssh ваш_логин@IP_адрес_вашего_сервера
     ```
 
 2.  **Установите Docker и Docker Compose**:
     *   Это самая важная часть. Выполните следующие команды на сервере, чтобы установить все необходимое:
     ```bash
-    # Обновляем списки пакетов
-    sudo apt-get update
+# Обновляем списки пакетов
+sudo apt-get update
 
-    # Устанавливаем необходимые пакеты
-    sudo apt-get install -y ca-certificates curl gnupg
+# Устанавливаем необходимые пакеты
+sudo apt-get install -y ca-certificates curl gnupg
 
-    # Добавляем официальный GPG-ключ Docker
-    sudo install -m 0755 -d /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-    sudo chmod a+r /etc/apt/keyrings/docker.gpg
+# Добавляем официальный GPG-ключ Docker
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
 
-    # Настраиваем репозиторий Docker
-    echo \
-      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+# Настраиваем репозиторий Docker
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
-    # Устанавливаем Docker Engine и Compose
-    sudo apt-get update
-    sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+# Устанавливаем Docker Engine и Compose
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
     ```
 
 3.  **Установите Git** (если его еще нет):
     ```bash
-    sudo apt-get install -y git
+sudo apt-get install -y git
     ```
 
 ---
@@ -80,37 +80,37 @@
 1.  **Клонируйте ваш проект из GitHub**:
     *   На сервере выполните команду:
     ```bash
-    git clone <URL_ВАШЕГО_РЕПОЗИТОРИЯ>
+git clone <URL_ВАШЕГО_РЕПОЗИТОРИЯ>
     ```
     *   Перейдите в папку с проектом:
     ```bash
-    cd telegram-ai-bot
+cd telegram-ai-bot
     ```
 
 2.  **Создайте файл с секретами (`.env`)**:
     *   Этот файл **не** копируется из Git. Его нужно создать прямо на сервере.
     *   Выполните команду, чтобы создать и начать редактировать файл:
     ```bash
-    nano .env
+nano .env
     ```
     *   Вставьте в него ваши секретные ключи. **ВАЖНО**: `DATABASE_URL` должен указывать на `db`, так как контейнеры будут в одной Docker-сети.
     ```
-    TELEGRAM_BOT_TOKEN=ВАШ_ТЕЛЕГРАМ_ТОКЕН
-    YANDEX_API_KEY=ВАШ_YANDEX_API_KEY
-    YC_FOLDER_ID=ВАШ_YC_FOLDER_ID
-    DATABASE_URL=postgres://user:pass@db:5432/ai_bot
+TELEGRAM_BOT_TOKEN=ВАШ_ТЕЛЕГРАМ_ТОКЕН
+YANDEX_API_KEY=ВАШ_YANDEX_API_KEY
+YC_FOLDER_ID=ВАШ_YC_FOLDER_ID
+DATABASE_URL=postgres://user:pass@db:5432/ai_bot
     ```
     *   Нажмите `Ctrl+X`, затем `Y` и `Enter`, чтобы сохранить и выйти из редактора `nano`.
 
 3.  **Создайте папку для документов** (если планируете загружать их на сервере):
     ```bash
-    mkdir -p data_pdfs
+mkdir -p data_pdfs
     ```
 
 4.  **Соберите и запустите бота**:
     *   В папке проекта (`telegram-ai-bot`) выполните команду:
     ```bash
-    docker-compose up -d --build
+docker-compose up -d --build
     ```
     *   `-d` (detached) — запуск в фоновом режиме.
     *   `--build` — принудительная пересборка образа с вашим кодом.
@@ -130,4 +130,4 @@
     2.  `docker-compose up -d --build` (пересобрать и перезапустить)
 
 ## Yandex Cloud
-������������� ��. Yandex_DEPLOY.md � ��� �������� ������� ���������� ��������, Serverless Container, �������� Search Index � ������� �������� �� Managed RAG.
+Подробности см. Yandex_DEPLOY.md для настройки Serverless Container, Search Index и Managed RAG.

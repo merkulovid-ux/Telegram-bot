@@ -10,7 +10,8 @@ langchain-text-splitters
 pypdf
 cryptography
 httpx
-yandex-cloud-ml-sdk
 boto3
-yandex-cloud-ml-sdk
 pytest
+pytest-asyncio
+langgraph
+yandexcloud
