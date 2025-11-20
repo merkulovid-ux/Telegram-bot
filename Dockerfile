@@ -1,24 +1,41 @@
-# AC 1: Используем официальный образ Python
-FROM python:3.11-slim
+# ---- Build Stage ----
+FROM python:3.11-slim as builder
 
-# AC 2: Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /app
 
+# Install build dependencies
+RUN pip install --upgrade pip poetry
 
+# Copy project files
+COPY pyproject.toml poetry.lock ./
 
-# AC 3: Копируем requirements.txt и устанавливаем зависимости
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt \
-    && apt-get update && apt-get install -y curl --no-install-recommends && rm -rf /var/lib/apt/lists/*
+# Install dependencies using Poetry
+RUN poetry install --no-root --no-dev
 
-# AC 4: Копируем весь остальной код проекта в контейнер
+# ---- Final Stage ----
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Create a non-root user
+RUN addgroup --system app && adduser --system --group app
+
+# Copy installed dependencies from the build stage
+COPY --from=builder /app/.venv .venv
+
+# Copy application code
 COPY . .
 
-# AC 5: Устанавливаем переменные среды для UTF-8
+# Set environment variables
+ENV PATH="/app/.venv/bin:$PATH"
 ENV PYTHONIOENCODING=utf-8
 ENV PYTHONUTF8=1
 
-# AC 6: Команда по умолчанию
-CMD ["python", "app.py"]
+# Change ownership of the app directory
+RUN chown -R app:app /app
 
-# DoD: Файл соответствует всем AC.
+# Switch to the non-root user
+USER app
+
+# Default command
+CMD ["python", "app.py"]

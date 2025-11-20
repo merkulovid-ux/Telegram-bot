@@ -16,19 +16,10 @@ services:
       - "5432:5432"
     restart: unless-stopped
 
-  app:
-    build: .
-    dns:
-      - 8.8.8.8
-    container_name: bot_app_compose
-    depends_on:
-      - db
-    env_file:
-      - .env
-    volumes:
-      - ./data_pdfs:/app/data_pdfs
-    command: python main_langgraph.py
-    restart: always
+# The 'app' service is removed for local development flexibility.
+# In production, the application will be run as a Docker container on a Yandex Compute Cloud VM.
+# To run the application locally, use:
+# python app.py
 
 volumes:
   pgdata:

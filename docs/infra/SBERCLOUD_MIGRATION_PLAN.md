@@ -106,4 +106,11 @@
 
 **Цель:** Начать разработку Terraform-скриптов для управления инфраструктурой на SberCloud.
 
-**Результат:** Создана директория `terraform` и базовый файл `main.tf` с конфигурацией провайдера SberCloud. **Для продолжения требуются учетные данные (Access Key и Secret Key).**
+**Результат:**
+- Создана директория `terraform`, конфигурация провайдера SberCloud.
+- Реализован модуль `modules/network` (VPC + сабнеты + security group).
+- Реализован модуль `modules/managed_pg` (Managed PostgreSQL + pgvector + безопасность).
+- Настроен CI (`.github/workflows/infra-cloudru.yml`) для `terraform plan/validate`.
+- Обновлены переменные и примеры конфигурации.
+
+**Следующий шаг:** подготовить OBS-бакет для state, загрузить ключи в Vault/GitHub Secrets и протестировать `terraform init/plan`.

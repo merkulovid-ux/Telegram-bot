@@ -82,3 +82,4 @@ docker exec pgvector_compose psql -U user -d ai_bot -c "SELECT table_name FROM i
 
 
 
+
