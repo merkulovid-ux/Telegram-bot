@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: pgvector_compose
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: ai_bot
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db_init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./migrations:/migrations
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+# The 'app' service is removed for local development flexibility.
+# In production, the application will be run as a Docker container on a Yandex Compute Cloud VM.
+# To run the application locally, use:
+# python app.py
+
+volumes:
+  pgdata:

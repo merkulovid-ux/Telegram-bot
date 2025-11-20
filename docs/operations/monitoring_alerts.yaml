@@ -1,0 +1,24 @@
+notification_channels:
+  - type: email
+    name: alerts-email
+    email: ops@processoff.com
+
+alerts:
+  - name: telegram-container-errors
+    metric: serverless.container.errors.count
+    comparison: GT
+    threshold: 0
+    aggregation: mean
+    period: 5m
+    channel_id: <channel-id>
+    labels:
+      container_id: <container-id>
+  - name: kb-diag-failed
+    metric: serverless.job.executions.failed_count
+    comparison: GT
+    threshold: 0
+    aggregation: mean
+    period: 15m
+    channel_id: <channel-id>
+    labels:
+      job_id: <kb-diag-job-id>

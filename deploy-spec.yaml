@@ -1,0 +1,41 @@
+apiVersion: deploy.yandex.cloud/v1
+kind: ExecutionSpec
+metadata:
+  name: telegram-ai-bot
+spec:
+  containers:
+    - name: app
+      image: cr.yandex/<registry-id>/telegram-ai-bot:
+      concurrency: 1
+      memory: 1GiB
+      cores: 1
+      service-account-id: <runtime-service-account-id>
+      secrets:
+        - name: TELEGRAM_BOT_TOKEN
+          valueFrom:
+            secretId: <lockbox-secret-id>
+            key: TELEGRAM_BOT_TOKEN
+        - name: YC_API_KEY
+          valueFrom:
+            secretId: <lockbox-secret-id>
+            key: YC_API_KEY
+        - name: YC_OBS_ACCESS_KEY_ID
+          valueFrom:
+            secretId: <lockbox-secret-id>
+            key: YC_OBS_ACCESS_KEY_ID
+        - name: YC_OBS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretId: <lockbox-secret-id>
+            key: YC_OBS_SECRET_ACCESS_KEY
+      env:
+        - name: DATABASE_URL
+          value: postgresql://user:pass@pg:5432/ai_bot
+        - name: YANDEX_FOLDER_ID
+          value: <folder-id>
+        - name: YC_SEARCH_INDEX_ID
+          value: <search-index-id>
+        - name: YC_ASSISTANT_ID
+          value: <assistant-id>
+  destination:
+    serverless-container:
+      id: <container-id>

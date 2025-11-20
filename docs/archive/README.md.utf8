@@ -1,0 +1,169 @@
+# Telegram AI Bot
+## Ингест и обновление Search Index
+
+1. Класть новые PDF/TXT/MD в `data_pdfs/` (см. `data_pdfs/Scrum`).
+2. Запускать `python ingest_yc.py`:
+   - скрипт подхватывает `kb_category`/`kb_topic`, загружает файлы в Object Storage (`processoff-kb/knowledge-base/`) и создаёт новый Search Index в AI Studio.
+   - `.yc_search_index_id` обновляется автоматически, сохраните ID в `.env`.
+3. Выполнить `python create_assistant.py`, чтобы ассистент (если нужен) стал использовать свежий индекс, и обновить `.yc_assistant_id`.
+4. Перезапустить сервис (`docker compose restart app`), чтобы `/kb`, `/ask`, `/swot`, `/digest` и другие команды подхватили новые данные.
+
+> Прятайте `.yc_search_index_id`/`.yc_assistant_id` из коммитов, но держите ID в `.env` и в CI.
+Телеграм‑бот, который отвечает на вопросы по внутренним материалам ProcessOff. Бот использует **Yandex AI Studio** (ассистенты + Search Index), а события/обратную связь сохраняет в PostgreSQL (pgvector больше не нужен).
+
+## Требования
+
+- Python 3.11+
+- PostgreSQL (локально или в Docker)
+- Аккаунт в Yandex Cloud с доступом к Object Storage и AI Studio
+
+## Установка
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate  # Windows
+pip install -r requirements.txt
+```
+
+Скопируйте `.env.example` → `.env` и заполните переменные:
+
+| Переменная | Значение |
+| --- | --- |
+| `TELEGRAM_BOT_TOKEN` | токен бота от BotFather |
+| `DATABASE_URL` | строка подключения к PostgreSQL (`postgresql://user:pass@localhost:5432/ai_bot`) |
+| `YANDEX_API_KEY`, `YC_API_KEY` | API‑ключи Yandex Cloud (можно один и тот же) |
+| `YANDEX_FOLDER_ID`, `YC_FOLDER_ID` | идентификатор каталога Yandex Cloud |
+| `YC_SEARCH_INDEX_ID`, `YC_ASSISTANT_ID` | актуальные ID индекса и ассистента (обновляются скриптами ниже) |
+| `YC_OBS_*` | реквизиты Object Storage для загрузки документов |
+
+## Работа с базой знаний
+
+1. Сложите PDF/TXT/MD в `data_pdfs/` (можно использовать подпапки).
+2. Запустите ingestion — он загрузит файлы в Object Storage и создаст Search Index:
+   ```bash
+   python ingest_yc.py
+   ```
+   Скрипт записывает ID индекса в `.yc_search_index_id` и `.env`.
+3. Создайте/обновите ассистента:
+   ```bash
+   python create_assistant.py
+   ```
+   ID ассистента попадёт в `.yc_assistant_id` и `.env`.
+
+> Совет: чтобы команда `/kb` показывала категории, добавляйте к файлам метки `kb_category` и `kb_topic` (в `ingest_yc.py` можно расширить словарь `labels`). При отсутствии меток файл попадёт в категорию «Общее», а названием темы станет имя файла.
+
+## Запуск бота
+
+```bash
+python app.py
+```
+
+Бот подключает роутеры из `handlers/`, общается с AI Studio через `assistant_client.py`, работу с PostgreSQL обеспечивает `db.py`.
+
+## Основные команды
+
+| Команда | Описание |
+| --- | --- |
+| `/ask <вопрос>` | RAG‑ответ по базе знаний; в конце — следующий шаг и список источников |
+| `/digest <тема>` | дайджест 3–5 пунктов |
+| `/nvc <фраза>` | переформулировка в формате ННО |
+| `/po_helper <запрос>` | советы для Product Owner («объяснение + пример») |
+| `/swot <объект>` | SWOT‑анализ |
+| `/retro`, `/icebreaker` | сценарии ретро/icebreaker |
+| `/kb` | просмотр категорий и тем (берутся из Search Index) |
+| `/feedback` | сбор обратной связи |
+| `/admin` | статистика и отзывы (только ADMIN_ID) |
+
+LLM‑команды сохраняют `thread_id`, поэтому «да/ещё» в диалоге продолжает разговор в том же потоке ассистента.
+
+## Структура проекта
+
+- `assistant_client.py` — обёртка над Yandex AI Studio (ассистент, threads, форматирование цитат).
+- `kb_metadata.py` — выгружает категории/темы из Search Index.
+- `handlers/llm_commands.py` — команды бота, работающие через ассистента.
+- `db.py` — единая точка для пула PostgreSQL.
+- `ingest_yc.py`, `create_assistant.py` — обновление базы знаний и ассистента.
+- `BACKLOG.md` — список задач.
+
+## Лицензия
+
+Внутренний проект ProcessOff. Используйте в соответствии с корпоративными политиками.
+
+##    
+
+1.     docker compose  .env.local: 
+``ash
+docker compose --env-file .env.local up --build
+``
+    MANAGED_RAG_PUBLIC_URL, MANAGED_RAG_TOKEN  MANAGED_RAG_VERSION_ID   ,      (. 
+esponses_client.py).
+2.      .env.prod (    GitHub Secrets/Yandex Secret Manager).
+3. CI/CD (GitHub Actions, Yandex Cloud Build)    ENV-  , :
+``ash
+docker compose --env-file .env.prod up --build
+``
+     Docker- + yc serverless-container deploy/yc managed-kubernetes   (YC_TOKEN, MANAGED_RAG_*, DATABASE_URL).
+4.          ,   .
+
+## Deploy in Yandex Cloud
+
+### Local development
+1. Create .env.local from .env.local.example, populate TELEGRAM_BOT_TOKEN, YC_API_KEY, YC_FOLDER_ID, YC_SEARCH_INDEX_ID, DATABASE_URL=postgresql://user:pass@db:5432/ai_bot. Leave MANAGED_RAG_* empty; fallback uses SDK.
+2. Run docker compose --env-file .env.local up --build.
+3. Test /ask, /digest, /conflict.
+
+### Cloud deployment
+1. Use Serverless Containers: configure env vars (TELEGRAM_BOT_TOKEN, DATABASE_URL, YC_SEARCH_INDEX_ID) and secrets (MANAGED_RAG_TOKEN, DATABASE_URL).
+2. Point to Managed PostgreSQL by updating .env.prod.
+3. Create secrets via yc secrets create.
+4. Run yc serverless-container deploy (see example commands).
+5. Optionally set Telegram webhook to the container URL.
+
+### Managed RAG transition
+1. When publicUrl and ersion are available, set MANAGED_RAG_PUBLIC_URL, MANAGED_RAG_VERSION_ID, MANAGED_RAG_MODEL=t-tech/T-lite-it-1.0 in .env.prod.
+2. Restart the container  
+esponses_client calls 
+etrieve_generate.
+3. Without these values, the bot continues using the SDK fallback.
+
+### Sample commands
+``
+yc secrets create --name TELEGRAM_BOT_TOKEN --data TELEGRAM_BOT_TOKEN=...
+yc secrets create --name MANAGED_RAG_TOKEN --data accessToken=...
+yc serverless-container deploy --name telegram-ai-bot --image ghcr.io/<repo>/telegram-ai-bot: --memory 1GiB --concurrency 1 --env TELEGRAM_BOT_TOKEN= --secrets MANAGED_RAG_TOKEN
+``
+
+##    Yandex Cloud
+  -  , Serverless Container  Managed RAG  Yandex_DEPLOY.md.
+
+      python check_env.py  .
+
+ . Yandex_DEVOPS.md      GitHub (DevTools Repo, Cloud Build/Deploy, Lockbox).
+
+   job  cron- .  Yandex_AUTOMATION.md.
+>   :       ,   ,   .
+     .  Yandex_MONITORING.md.
+Yandex_INFRA_SETUP.md - check Yandex Cloud bootstrap steps.
+Launch checklist .  LAUNCH_CHECKLIST.md.
+   CI  python predeploy_check.py --env .env --env .env.prod (. workflow).
+  -    Agile Manifesto:   ,    ,       .
+    Lockbox/Secrets Manager .  Yandex_SECRETS.md.
+  TDD  XP-:    ,   ,      .
+ smoke-: pytest tests/test_smoke.py.
+ : . ROADMAP.md.
+  payload Lockbox  python export_lockbox_payload.py --env .env --env .env.prod --output secrets.json.
+**DevOps/Monitoring**:     DevTools/Repo, Cloud Build/Deploy, Lockbox, Serverless Containers/Jobs  /. **QA/TDD**:    predeploy_check + smoke- (pytest).
+  Cloud Build   .cloudbuild.yaml ( predeploy_check  smoke-  ).
+
+/: . monitoring_alerts.md.
+
+**Product Backlog Refinement**:  3  (-)  Roadmap/Backlog (, , ),         /.
+
+
+ (refinement  3 ): . BACKLOG.md.
+
+  Cloud Deploy: deploy-spec.yaml ( IDs , Lockbox   ).
+
+**Coding Standards 2025**:  PEP8 + type hints, docstring (Google style),   (Bandit/Secrets scan),  PR  unit+smoke    . Senior Code Reviewer   , DevOps/Monitoring    CI.
+
+  : python scripts/diag_report.py ( diag_report.md   JSON- diag_connectivity.py).

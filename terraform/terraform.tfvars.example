@@ -1,0 +1,46 @@
+sbercloud_access_key = "REPLACE_WITH_SC_ACCESS_KEY"
+sbercloud_secret_key = "REPLACE_WITH_SC_SECRET_KEY"
+cloud_ru_region      = "ru-moscow-1"
+environment          = "dev"
+
+network_vpc_name = "telegram-ai-bot"
+network_vpc_cidr = "10.20.0.0/16"
+network_subnets = [
+  {
+    name              = "app-a"
+    cidr              = "10.20.1.0/24"
+    gateway_ip        = "10.20.1.1"
+    availability_zone = "ru-moscow-1a"
+  },
+  {
+    name              = "app-b"
+    cidr              = "10.20.2.0/24"
+    gateway_ip        = "10.20.2.1"
+    availability_zone = "ru-moscow-1b"
+  }
+]
+
+network_security_group_name        = "telegram-ai-bot-sg"
+network_security_group_description = "Default SG for Telegram AI Bot workloads."
+network_security_group_rules = [
+  {
+    protocol         = "tcp"
+    port_range_min   = 80
+    port_range_max   = 80
+    remote_ip_prefix = "0.0.0.0/0"
+    description      = "Allow HTTP"
+  },
+  {
+    protocol         = "tcp"
+    port_range_min   = 443
+    port_range_max   = 443
+    remote_ip_prefix = "0.0.0.0/0"
+    description      = "Allow HTTPS"
+  }
+]
+
+# PostgreSQL configuration
+pg_version      = "15"
+pg_volume_size  = 100
+pg_admin_user   = "pg_admin"
+

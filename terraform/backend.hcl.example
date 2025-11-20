@@ -1,0 +1,15 @@
+# OBS bucket used for Terraform remote state.
+bucket  = "telegram-ai-bot-tfstate-example"
+key     = "envs/dev/terraform.tfstate"
+region  = "ru-moscow-1"
+endpoint = "https://obs.ru-moscow-1.hc.sbercloud.ru"
+
+# Recommended flags when using Cloud.ru OBS as S3 backend.
+skip_credentials_validation = true
+skip_region_validation      = true
+skip_requesting_account_id  = true
+
+# Access credentials should belong to a dedicated Terraform service account.
+access_key = "REPLACE_WITH_SC_ACCESS_KEY"
+secret_key = "REPLACE_WITH_SC_SECRET_KEY"
+

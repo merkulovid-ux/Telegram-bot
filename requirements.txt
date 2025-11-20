@@ -1,0 +1,17 @@
+aiogram
+asyncpg
+python-dotenv
+langchain
+pgvector
+langchain-core
+psycopg2-binary
+langchain-community
+langchain-text-splitters
+pypdf
+cryptography
+httpx
+boto3
+pytest
+pytest-asyncio
+langgraph
+yandexcloud
