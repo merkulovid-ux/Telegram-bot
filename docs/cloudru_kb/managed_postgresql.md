@@ -155,3 +155,4 @@ resource "null_resource" "db_migration" {
 - [Managed PostgreSQL документация](https://cloud.ru/docs/cloud-databases/postgresql/concepts/about)
 - [pgvector в PostgreSQL](https://github.com/pgvector/pgvector)
 - [Terraform provider](https://registry.terraform.io/providers/sbercloud-terraform/sbercloud/latest)
+

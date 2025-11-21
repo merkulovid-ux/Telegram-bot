@@ -320,3 +320,4 @@ TF_LOG=DEBUG terraform apply
 - [Terraform Registry](https://registry.terraform.io/providers/sbercloud-terraform/sbercloud/latest)
 - [GitHub Repository](https://github.com/sbercloud-terraform/terraform-provider-sbercloud)
 - [Documentation](https://cloud.ru/docs/terraform/concepts/about)
+

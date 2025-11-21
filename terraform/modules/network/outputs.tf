@@ -16,3 +16,4 @@ output "security_group_id" {
   value       = sbercloud_networking_secgroup_v2.default.id
 }
 
+

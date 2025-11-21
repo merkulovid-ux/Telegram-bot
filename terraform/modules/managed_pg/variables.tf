@@ -98,3 +98,4 @@ variable "db_admin_user" {
     error_message = "Database username must be valid PostgreSQL identifier"
   }
 }
+

@@ -66,3 +66,4 @@ module "managed_pg" {
 - Пароли не хранятся в Terraform state
 - Включены automated backups
 - Поддержка pgvector для embeddings
+

@@ -44,3 +44,4 @@ output "db_connection_template" {
   value       = "postgresql://${var.db_admin_user}:PASSWORD@${sbercloud_rds_instance_v3.main.private_ips[0]}:${local.db_port}/${local.db_name}"
   sensitive   = false
 }
+
