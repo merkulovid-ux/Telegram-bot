@@ -1,0 +1,11 @@
+{
+  "timestamp": "2025-01-21T15:00:00Z",
+  "readiness_score": 9.090909090909092,
+  "checks_passed": 1,
+  "total_checks": 11,
+  "recommendations": [
+    "Set Cloud.ru credentials",
+    null,
+    "Configure monitoring"
+  ]
+}
