@@ -321,3 +321,4 @@ TF_LOG=DEBUG terraform apply
 - [GitHub Repository](https://github.com/sbercloud-terraform/terraform-provider-sbercloud)
 - [Documentation](https://cloud.ru/docs/terraform/concepts/about)
 
+

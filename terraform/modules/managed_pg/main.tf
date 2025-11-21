@@ -85,3 +85,4 @@ resource "sbercloud_networking_secgroup_rule" "app_to_db" {
 # (If using Cloud.ru native backups to OBS bucket)
 # Note: This might require additional provider resources if available
 
+

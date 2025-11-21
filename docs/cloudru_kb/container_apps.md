@@ -193,3 +193,4 @@ curl -H "Authorization: Bearer $TOKEN" \
 - [Artifact Registry](https://cloud.ru/docs/artifacts/concepts/about)
 - [Terraform provider](https://registry.terraform.io/providers/sbercloud-terraform/sbercloud/latest)
 
+

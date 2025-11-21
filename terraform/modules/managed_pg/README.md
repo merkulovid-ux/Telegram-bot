@@ -67,3 +67,4 @@ module "managed_pg" {
 - Включены automated backups
 - Поддержка pgvector для embeddings
 
+
