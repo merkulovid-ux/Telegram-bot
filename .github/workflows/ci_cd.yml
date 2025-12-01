@@ -31,6 +31,12 @@ jobs:
         run: poetry install --no-interaction --no-root
         
       - name: Run tests
+        env:
+          TELEGRAM_BOT_TOKEN: "mock_token"
+          DATABASE_URL: "postgresql://user:pass@localhost:5432/db"
+          ADMIN_ID: "12345"
+          CLOUDRU_CLIENT_ID: "mock_id"
+          CLOUDRU_CLIENT_SECRET: "mock_secret"
         run: |
           poetry run pytest tests/test_smoke.py
 
