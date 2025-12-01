@@ -68,3 +68,8 @@ module "managed_pg" {
 - Поддержка pgvector для embeddings
 
 
+
+
+
+
+

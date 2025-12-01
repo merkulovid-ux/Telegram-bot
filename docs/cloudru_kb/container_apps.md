@@ -194,3 +194,8 @@ curl -H "Authorization: Bearer $TOKEN" \
 - [Terraform provider](https://registry.terraform.io/providers/sbercloud-terraform/sbercloud/latest)
 
 
+
+
+
+
+

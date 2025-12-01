@@ -322,3 +322,8 @@ TF_LOG=DEBUG terraform apply
 - [Documentation](https://cloud.ru/docs/terraform/concepts/about)
 
 
+
+
+
+
+

@@ -53,3 +53,8 @@ resource "sbercloud_networking_secgroup_rule_v2" "ingress" {
 
 
 
+
+
+
+
+

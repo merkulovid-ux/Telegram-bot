@@ -86,3 +86,8 @@ resource "sbercloud_networking_secgroup_rule" "app_to_db" {
 # Note: This might require additional provider resources if available
 
 
+
+
+
+
+
