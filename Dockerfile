@@ -13,7 +13,7 @@ RUN poetry config virtualenvs.in-project true
 COPY pyproject.toml poetry.lock ./
 
 # Install dependencies using Poetry
-RUN poetry install --no-root --no-dev
+RUN poetry install --no-root --without dev
 
 # ---- Final Stage ----
 FROM python:3.11-slim
