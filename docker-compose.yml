@@ -5,21 +5,37 @@ services:
     image: pgvector/pgvector:pg16
     container_name: pgvector_compose
     environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DB: ai_bot
+      POSTGRES_USER: ${POSTGRES_USER:-user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-pass}
+      POSTGRES_DB: ${POSTGRES_DB:-ai_bot}
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./db_init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./migrations:/migrations
     ports:
       - "5432:5432"
-    restart: unless-stopped
+    restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-user} -d ${POSTGRES_DB:-ai_bot}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-# The 'app' service is removed for local development flexibility.
-# In production, the application will be run as a Docker container on a Yandex Compute Cloud VM.
-# To run the application locally, use:
-# python app.py
+  bot:
+    build: .
+    image: ghcr.io/${GITHUB_REPOSITORY_OWNER:-user}/telegram-ai-bot:latest
+    container_name: telegram_bot
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-user}:${POSTGRES_PASSWORD:-pass}@db:5432/${POSTGRES_DB:-ai_bot}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./data_pdfs:/app/data_pdfs
+      - ./logs:/app/logs
+    restart: always
 
 volumes:
   pgdata:

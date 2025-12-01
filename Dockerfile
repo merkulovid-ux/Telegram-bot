@@ -6,6 +6,9 @@ WORKDIR /app
 # Install build dependencies
 RUN pip install --upgrade pip poetry
 
+# Configure poetry to create virtualenv in the project folder
+RUN poetry config virtualenvs.in-project true
+
 # Copy project files
 COPY pyproject.toml poetry.lock ./
 
@@ -38,4 +41,4 @@ RUN chown -R app:app /app
 USER app
 
 # Default command
-CMD ["python", "app.py"]
+CMD ["python", "main_langgraph.py"]

@@ -78,11 +78,11 @@ async def test_search_index() -> bool:
 
 def test_object_storage() -> bool:
     started = time.time()
-    bucket = os.getenv("YC_OBS_BUCKET")
-    access_key = os.getenv("YC_OBS_ACCESS_KEY_ID")
-    secret_key = os.getenv("YC_OBS_SECRET_ACCESS_KEY")
-    endpoint = os.getenv("YC_OBS_ENDPOINT", "https://storage.yandexcloud.net")
-    region = os.getenv("YC_OBS_REGION", "ru-central1")
+    bucket = os.getenv("CLOUDRU_OBS_BUCKET")
+    access_key = os.getenv("CLOUDRU_OBS_ACCESS_KEY_ID")
+    secret_key = os.getenv("CLOUDRU_OBS_SECRET_ACCESS_KEY")
+    endpoint = os.getenv("CLOUDRU_OBS_ENDPOINT")
+    region = os.getenv("CLOUDRU_OBS_REGION", "ru-central1")
 
     if not bucket or not access_key or not secret_key:
         log_result(

@@ -50,7 +50,7 @@
     --name alerts-email \
     --email ops@processoff.com
   ```
-- Telegram via webhook (���? �?�?�'�?�?�?�?�? ����?���>�? �? Monitoring).
+- Telegram через webhook (стандартный канал в Yandex Monitoring — создайте в интерфейсе, подставьте его `id`).
 
 ## Automation via CLI script
 - Сгенерировать команды из `monitoring_alerts.yaml`:
@@ -70,8 +70,8 @@
   `--var KEY=VALUE` можно повторять — он заменяет `<KEY>` во всех командах.
 
 ## Dashboards
-���?���?�����'�� `dashboard.json` �? �?�?���"�����?��:
-- `serverless.container.requests.count` (by status)
+Примерный состав `dashboard.json` для дашборда наблюдения:
+- `serverless.container.requests.count` (по статусам)
 - `serverless.container.errors.count`
 - `serverless.job.executions.count`
 - `serverless.job.executions.failed_count`
@@ -80,7 +80,7 @@
 yc monitoring dashboard create --file dashboard.json
 ```
 
-## ����?�>���?��?�'
-- �?�?�?�?��?��� �?���?�+�?�?�?�� ����?�?��?�?�?.
-- �������Ő�? �?�� ���>��?�'�< �%�30 �?��?�?�'.
-- �?�?�?�>�� ��?�Ő�?��?�'�� �?" ��������?�? �? ��?�?�?���> (�?�?. Yandex_MONITORING.md).
+## Заметки
+- Держите идентификаторы контейнера/джоба в одном месте (`monitoring_alerts.yaml`) и подставляйте через `--var`.
+- Порог держите на нуле, чтобы ловить любой сбой; если алерты шумят — увеличьте окно или порог.
+- Дашборд `dashboard.json` — шаблон; адаптируйте под свои id и среды (см. Yandex_MONITORING.md).
